@@ -1,3 +1,16 @@
+##------------------------------------------------------------------------#
+## Nombre del Script: Primer ejemplo de GIT  ------------------------------
+##  
+## Proposito del Script:  
+##  
+## Autor: Daniel S. Parra Gonzalez 
+## Fecha de creacion:  
+##  
+## Copyright (c) Daniel S. Parra, 2020 
+##  
+## Email: dsparrag@unal.edu.co 
+##------------------------------------------------------------------------#
+
 library(dplyr)
 library(ggplot2)
 
