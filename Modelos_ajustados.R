@@ -50,8 +50,7 @@ gsummary(data1, invar=TRUE)
 
 
 
-# G1 <- 
-  data1 %>% 
+G1 <- data1 %>% 
   ggplot(mapping = aes(x = dia, y = Ln, group = sujeto, col = sujeto)) +
   geom_point() +
   facet_wrap(.~label, ncol = 2)+
@@ -60,7 +59,7 @@ gsummary(data1, invar=TRUE)
                aes(group = grupo))
   
 
-
+G1
 
 ##########################################################################-
 # Ajuste de modelos lineales en S con LM ----------------------------------
@@ -105,6 +104,25 @@ plot(intervals(fm1.lis))
 
 fm1.lme <- lme(Ln ~ 0 + (peso * dia) + (grupo * dia), data1 , 
                random = ~ 0 + dia | sujeto)
+
+
+data <- data %>% 
+  add_column(fm1_lme_0 = predict(fm1.lme, level = 0),
+             fm1_lme_1 = predict(fm1.lme, level = 1))
+
+g2a <-
+  ggplot(data, mapping = aes(x = Ln, y = fm1_lme_0, col = sujeto)) +
+  geom_point()+ 
+  coord_cartesian(xlim = c(3,7), ylim = c(3,7))
+
+g2b <-
+  ggplot(data, mapping = aes(x = Ln, y = fm1_lme_1, col = sujeto)) +
+  geom_point() + 
+  coord_cartesian(xlim = c(3,7), ylim = c(3,7))
+
+gridExtra::grid.arrange(g2a, g2b)
+
+
 
 
 
