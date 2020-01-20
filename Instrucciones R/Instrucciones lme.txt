@@ -1,0 +1,169 @@
+# Apertura del paquete
+library("nlme")
+
+# Lectura de archivo
+ r <- read.csv(file.choose())
+
+# Tener en cuenta las siguientes variables r$ ={Grupo, Día, Sujeto, Peso, Volumen, Ln.Vol}
+
+# Screening de variables 
+# Prueba con Matriz R con especificación de estructura de Simetría Compuesta
+LME.CS.1 <- lme(Ln.Vol ~ 0 + Peso + (Grupo * Día),
+	data = r, 
+	random =  Sujeto | Grupo,
+	na.action=na.omit,
+	method="ML", 
+	control=lmeControl(msMaxIter = 500, msVerbose = TRUE))
+
+
+					list(Sujeto = ~ 0  + Peso + Día), 
+summary(CS.lme)
+
+
+
+CS.lme <- lme(Ln.Vol ~ 0 + Peso + (Grupo * Día),
+              data = r, 
+              random = list(Sujeto = ~ 0  + Peso + Día), 
+              na.action=na.omit,
+              method="ML", 
+              control=lmeControl(msMaxIter = 500, msVerbose = TRUE))
+
+summary(CS.lme)
+
+
+UN.lme <-update(CS.lme, corr=corSymm(, form= ~1|Sujeto), weights=varIdent(form= ~1|Día))
+UN.lme <-update(CS.lme, corr=corSymm(), weights=varIdent(form= ~1|Día))
+UN.lme <-update(CS.lme, weights=varIdent(form= ~1|0 + Día))
+
+
+UN1.lme <-update(CS.lme, corr=corSymm(), weights=varIdent(form= ~1|0 +Día))
+
+UN1.lme <-update(CS.lme, corr=corSymm(), weights=varIdent(form= ~1|0 +Día))
+UN1.lme <-update(CS.lme, corr=corSymm(), weights=varIdent())
+
+# Prueba con Matriz R sin especificación de una estructura de covarianza
+SIMPLE.glm <- gls(Ln.Vol ~ 0 + Peso + (Grupo * Día), data = r, method="REML", control=lmeControl(msMaxIter = 500, msVerbose = TRUE), na.action=na.omit)
+
+# Prueba con Matriz R con especificación de estructura de Simetría Compuesta
+CS.lme <- lme(Ln.Vol ~ 0 + Peso + (Grupo * Día),
+	data = r, 
+	random = ~ 1 | Sujeto, 
+	na.action=na.omit,
+	method="ML", 
+	control=lmeControl(msMaxIter = 500, msVerbose = TRUE))
+
+
+SIMPLE1.glm <- update(SIMPLE.glm, corr=null, weights=null)
+
+
+# Prueba de Matriz No Estructurada (No exitosa)
+UN.glm <-update(SIMPLE.glm, corr=corSymm(form= ~1|Sujeto), weights=varIdent(form= ~1|Día))
+
+# Prueba de Matriz de Simetría Compuesta
+CS.glm <- update(SIMPLE.glm, correlation=corCompSymm(, form = ~ 1 | Sujeto))
+
+# Prueba de Matriz de Simetría Compuesta con Heterocesdasticidad
+CSH.glm <- update(SIMPLE.glm, correlation=corCompSymm(, form = ~ 1 | Sujeto), weights=varIdent(, form=~1|Día))
+
+CSH.glm.B <- update(SIMPLE.glm, 
+		correlation=corCompSymm(, form = ~ 1 | Sujeto), 
+		weights=varIdent(, form=list(Peso = 1, Grupo * Día = 1))
+
+
+# Prueba de Matriz Toepliz
+TOEP.glm <- update(SIMPLE.glm, corr=corARMA(, form = ~1|Sujeto, p = 3, q=0))
+
+model1 <- lme(Ln.Vol ~ Grupo + Día + Peso + (Grupo*Día),
+	data=r,
+	fixed = Grupo + Día + Peso + Grupo*Día ~ 1,
+	random =  ~ 1, 
+	correlation=corAR1(0.6, form= Grupo ~ 1),
+	method = "ML",
+	)
+
+model1 <- lme(Ln.Vol ~ Grupo + Día + Peso,
+	data=r,
+	fixed = Grupo + Día + Peso  ~ 1,
+	random =  ~ 1 | Sujeto, 
+	correlation=corAR1(0.6, form= Grupo ~ 1),
+	method = "ML",
+	)
+
+model1 <- lme(Ln.Vol ~ Grupo + Día + Peso,
+	data=r,
+	random =  ~ 1| Sujeto, 
+	method = "ML",
+	)
+
+model2 <- lme(Ln.Vol ~ Grupo + Día + Peso,
+	data=r,
+	random =  ~ 1 + Día| Sujeto, 
+	method = "ML",
+	)
+
+intervals(model1, method = "boot", nsim = 100000)
+
+anova(mode1, model2, ddf="Satterthwaite")
+---------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------
+unconditional <- lme(Ln.Vol ~ 1,
+		data=r,
+		random =  ~ 1 | Sujeto, 
+		method = "ML")
+
+
+unconditional.growth1 <- lme(Ln.Vol ~ Día,
+			data=r,
+			random =  ~ Día | Sujeto, 
+			method = "ML")
+
+unconditional.growth2 <- lme(Ln.Vol ~ Día,
+			data=r,
+			random =  ~ 1+ Día | Sujeto, 
+			method = "ML")
+
+conditional.growth1 <- lme(Ln.Vol ~ Día * Grupo,
+			data=r,
+			random =  ~ Día | Sujeto, 
+			method = "ML")
+
+conditional.growth.noslope <- lme(Ln.Vol ~ Día * Grupo,
+			data=r,
+			random =  ~ 1 | Sujeto, 
+			method = "ML")
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+simple <- lme(Ln.Vol ~ Día * Grupo,
+		data=r,
+		random =  list(Sujeto = pdDiag(~ Día)),
+		method = "ML")
+
+CP <- lme(Ln.Vol ~ Día * Grupo,
+		data=r,
+		random =  list(Sujeto = pdCompSymm(~ Día)),
+		method = "ML")
+
+Symm <- lme(Ln.Vol ~ Día * Grupo,
+		data=r,
+		random =  list(Sujeto = pdSymm(~ Día)),
+		method = "ML")
+
+Symm <- lme(Ln.Vol ~ Día * Grupo,
+		data=r,
+		random =  list(Sujeto = pdIdent(~ Día)),
+		method = "ML")
+
+conditional.growth2 <- lme(Ln.Vol ~ Día * Grupo + Peso,
+			data=r,
+			random =  ~ Día | Sujeto, 
+			method = "ML",
+			)
+
+
+
+
+
+
+
+

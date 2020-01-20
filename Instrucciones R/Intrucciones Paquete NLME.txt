@@ -1,0 +1,15 @@
+install.packages("nlme")
+
+model_lme<-lme(distance~age+Sex, random=~1|Subject,data=Orthodont)
+
+plot(ranef(model_lme))
+
+res_lme=residuals(model_lme)
+plot(res_lme)
+qqnorm(res_lme)
+qqline(res_lme)
+plot(model_lme)
+
+
+model_lme1<-lme(distance ~ age + factor(Sex),random = ~ 1 | Subject, cor=corAR1(0.6,form=~1|Subject),data = Orthodont)
+

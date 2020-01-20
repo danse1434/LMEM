@@ -1,0 +1,54 @@
+Tiempo	Sujeto	Valor.A
+
+modelo.tratamiento = lmer(Valor ~ Tiempo + (1 + Tiempo | Sujeto), data = x, REML = FALSE)
+summary(modelo.tratamiento)
+
+
+modelo.tratamientoA = lmer(Valor.A ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = FALSE)
+modelo.tratamientoA.null = lmer(Valor.A ~ Tiempo + (1 | Sujeto), data = y, REML = FALSE)
+comparacion.A <- anova(modelo.tratamientoA, modelo.tratamientoA.null)
+
+modelo.tratamientoB = lmer(Valor.B ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = FALSE)
+modelo.tratamientoB.null = lmer(Valor.B ~ Tiempo + (1 | Sujeto), data = y, REML = FALSE)
+comparacion.B <- anova(modelo.tratamientoB, modelo.tratamientoB.null)
+
+modelo.tratamientoC = lmer(Valor.C ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = FALSE)
+modelo.tratamientoC.null = lmer(Valor.C ~ Tiempo + (1 | Sujeto), data = y, REML = FALSE)
+comparacion.C <- anova(modelo.tratamientoC, modelo.tratamientoC.null)
+
+modelo.tratamientoD = lmer(Valor.D ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = FALSE)
+modelo.tratamientoD.null = lmer(Valor.D ~ Tiempo + (1 | Sujeto), data = y, REML = FALSE)
+comparacion.D <- anova(modelo.tratamientoD, modelo.tratamientoD.null)
+
+
+modelo.tratamientoA.REML = lmer(Valor.A ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = TRUE)
+modelo.tratamientoA.REML.null = lmer(Valor.A ~ Tiempo + (1 | Sujeto), data = y, REML = TRUE)
+
+modelo.tratamientoB.REML = lmer(Valor.B ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = TRUE)
+modelo.tratamientoB.REML.null = lmer(Valor.B ~ Tiempo + (1 | Sujeto), data = y, REML = TRUE)
+
+modelo.tratamientoC.REML = lmer(Valor.C ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = TRUE)
+modelo.tratamientoC.REML.null = lmer(Valor.C ~ Tiempo + (1 | Sujeto), data = y, REML = TRUE)
+
+modelo.tratamientoD.REML = lmer(Valor.D ~ Tiempo + (1 + Tiempo | Sujeto), data = y, REML = TRUE)
+modelo.tratamientoD.REML.null = lmer(Valor.D ~ Tiempo + (1 | Sujeto), data = y, REML = TRUE)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+summary(modelo.tratamientoA)
+summary(	modelo.tratamientoA.null)
+summary(modelo.tratamientoB)
+summary(	modelo.tratamientoB.null)
+summary(	modelo.tratamientoC)
+summary(	modelo.tratamientoC.null)
+summary(	modelo.tratamientoD)
+summary(	modelo.tratamientoD.null)
+
+summary(	modelo.tratamientoA.REML)
+summary(	modelo.tratamientoA.REML.null)
+summary(	modelo.tratamientoB.REML)
+summary(	modelo.tratamientoB.REML.null)
+summary(	modelo.tratamientoC.REML)
+summary(	modelo.tratamientoC.REML.null)
+summary(	modelo.tratamientoD.REML)
+summary(	modelo.tratamientoD.REML.null)
